@@ -1,39 +1,45 @@
 import React from 'react';
-import Header from './components/Header/Header';
-import Main from './components/Main/Main';
-import Footer from './components/Footer/Footer';
 
-import PopupWithForm from './components/PopupWithForm/PopupWithForm';
-import ImagePopup from './components/ImagePopup/ImagePopup';
+import Header from './Header';
+import Main from './Main';
+import Footer from './Footer';
+
+import PopupWithForm from './PopupWithForm';
+import ImagePopup from './ImagePopup';
 
 
 function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState({});
+
+
+  function openWindow(selector) {
+    const popupSelector = document.querySelector(selector);
+    const popupWindow = popupSelector.closest('.popup');
+    popupWindow.classList.add('popup_opened');
+  }
+
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
-
-    const popupSelector = document.querySelector('.form[name="avatar"]');
-    const popupWindow = popupSelector.closest('.popup');
-    popupWindow.classList.add('popup_opened');
+    openWindow('.form[name="avatar"]');
   }
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
-
-    const popupSelector = document.querySelector('.form[name="profile"]');
-    const popupWindow = popupSelector.closest('.popup');
-    popupWindow.classList.add('popup_opened');
+    openWindow('.form[name="profile"]');
   }
 
   function handleAddPlaceClick() {
     setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
+    openWindow('.form[name="card"]');
+  }
 
-    const popupSelector = document.querySelector('.form[name="card"]');
-    const popupWindow = popupSelector.closest('.popup');
-    popupWindow.classList.add('popup_opened');
+  function handleCardClick(card) {
+    setSelectedCard(card);
+    openWindow('.popup__image-container');
   }
 
 
@@ -56,6 +62,7 @@ function App() {
         onEditAvatar={handleEditAvatarClick}
         onEditProfile={handleEditProfileClick}
         onAddPlace={handleAddPlaceClick}
+        onCardClick={handleCardClick}
       />
 
       <Footer />
@@ -65,7 +72,7 @@ function App() {
         title="Обновить аватар"
         name="avatar"
         btnTitle="Сохранить"
-        inputs={[
+        children={[
           {name: 'avatar', placeholder: 'Ссылка на аватарку'}
         ]}
         isOpen={isEditAvatarPopupOpen}
@@ -76,7 +83,7 @@ function App() {
         title="Редактировать профиль"
         name="profile"
         btnTitle="Сохранить"
-        inputs={[
+        children={[
           {name: 'name', placeholder: 'Имя деятеля'},
           {name: 'about', placeholder: 'Деятельность'}
         ]}
@@ -88,7 +95,7 @@ function App() {
         title="Новое место"
         name="card"
         btnTitle="Создать"
-        inputs={[
+        children={[
           {name: 'name', placeholder: 'Название'},
           {name: 'link', placeholder: 'Ссылка на картинку'}
         ]}
@@ -100,37 +107,15 @@ function App() {
         title="Вы уверены?"
         name="confirmation"
         btnTitle="Да"
-        inputs={[]}
+        children={[]}
         isOpen={false}
         onClose={closeAllPopups}
       />
 
-      <ImagePopup />
-
-
-
-
-
-      <template id="element">
-        <ul className="element">
-          <li className="element__item">
-            <img src="https://via.placeholder.com/282" alt="Фото красивого места" className="element__image" />
-
-            <button className="element__btn-remove" type="button" aria-label="Удалить карточку"></button>
-          </li>
-
-          <li className="element__item">
-            <div className="element__body">
-              <h2 className="element__title">Эльбрус</h2>
-
-              <div className="element__like-zone">
-                <button className="element__btn-like" type="button" aria-label="Поставить либо убрать лайк"></button>
-                <p className="element__likes">5</p>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </template>
+      <ImagePopup
+        card={selectedCard}
+        onClose={closeAllPopups}
+      />
     </div>
   );
 }

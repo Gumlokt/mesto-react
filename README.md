@@ -5,7 +5,7 @@
 Фотогаллерея будет особенно интересна ценителям горных пейзажев.
 
 
-Демо здесь: [Mesto](https://gumlokt.github.io/mesto-mesto/)
+Демо здесь: [Mesto](https://gumlokt.github.io/mesto-react/)
 
 
 ### Стек использованных технологий:
