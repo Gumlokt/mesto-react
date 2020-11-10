@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/mesto-react/static/css/main.e8a92108.chunk.css",
+    "main.js": "/mesto-react/static/js/main.4a2ab723.chunk.js",
+    "main.js.map": "/mesto-react/static/js/main.4a2ab723.chunk.js.map",
+    "runtime-main.js": "/mesto-react/static/js/runtime-main.44bc6d67.js",
+    "runtime-main.js.map": "/mesto-react/static/js/runtime-main.44bc6d67.js.map",
+    "static/js/2.270b6351.chunk.js": "/mesto-react/static/js/2.270b6351.chunk.js",
+    "static/js/2.270b6351.chunk.js.map": "/mesto-react/static/js/2.270b6351.chunk.js.map",
+    "static/js/3.7f37cfaf.chunk.js": "/mesto-react/static/js/3.7f37cfaf.chunk.js",
+    "static/js/3.7f37cfaf.chunk.js.map": "/mesto-react/static/js/3.7f37cfaf.chunk.js.map",
+    "index.html": "/mesto-react/index.html",
+    "static/css/main.e8a92108.chunk.css.map": "/mesto-react/static/css/main.e8a92108.chunk.css.map",
+    "static/js/2.270b6351.chunk.js.LICENSE.txt": "/mesto-react/static/js/2.270b6351.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/mesto-react/static/media/icon-trash.dd7c53a4.svg",
+    "static/media/cousteau.bbe7c5b6.jpg": "/mesto-react/static/media/cousteau.bbe7c5b6.jpg",
+    "static/media/logo.2e17206c.svg": "/mesto-react/static/media/logo.2e17206c.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.44bc6d67.js",
+    "static/js/2.270b6351.chunk.js",
+    "static/css/main.e8a92108.chunk.css",
+    "static/js/main.4a2ab723.chunk.js"
+  ]
+}
