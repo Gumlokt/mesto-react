@@ -12,34 +12,25 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
+  const [isImagePopupOpen, setImagePopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
 
 
-  function openWindow(selector) {
-    const popupSelector = document.querySelector(selector);
-    const popupWindow = popupSelector.closest('.popup');
-    popupWindow.classList.add('popup_opened');
-  }
-
-
   function handleEditAvatarClick() {
-    setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
-    openWindow('.form[name="avatar"]');
+    setIsEditAvatarPopupOpen(true);
   }
 
   function handleEditProfileClick() {
-    setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
-    openWindow('.form[name="profile"]');
+    setIsEditProfilePopupOpen(true);
   }
 
   function handleAddPlaceClick() {
-    setIsAddPlacePopupOpen(!isAddPlacePopupOpen);
-    openWindow('.form[name="card"]');
+    setIsAddPlacePopupOpen(true);
   }
 
   function handleCardClick(card) {
     setSelectedCard(card);
-    openWindow('.popup__image-container');
+    setImagePopupOpen(true);
   }
 
 
@@ -47,9 +38,7 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
-
-    const popupWindow = document.querySelector('.popup_opened');
-    popupWindow.classList.remove('popup_opened');
+    setImagePopupOpen(false);
   }
 
 
@@ -59,62 +48,75 @@ function App() {
       <Header />
 
       <Main
-        onEditAvatar={handleEditAvatarClick}
-        onEditProfile={handleEditProfileClick}
-        onAddPlace={handleAddPlaceClick}
-        onCardClick={handleCardClick}
+        onEditAvatar = {handleEditAvatarClick}
+        onEditProfile = {handleEditProfileClick}
+        onAddPlace = {handleAddPlaceClick}
+        onCardClick = {handleCardClick}
       />
 
       <Footer />
 
 
       <PopupWithForm
-        title="Обновить аватар"
-        name="avatar"
-        btnTitle="Сохранить"
-        children={[
-          {name: 'avatar', placeholder: 'Ссылка на аватарку'}
-        ]}
+        title = "Обновить аватар"
+        name = "avatar"
+        btnTitle = "Сохранить"
+        inputs = {
+          <>
+            <input type="url" className="form__text-input" name="avatar" defaultValue="" placeholder="Ссылка на аватарку" id="avatar" required />
+            <span className="form__input-error" id="avatar-error"></span>
+          </>
+        }
         isOpen={isEditAvatarPopupOpen}
         onClose={closeAllPopups}
       />
 
       <PopupWithForm
-        title="Редактировать профиль"
-        name="profile"
-        btnTitle="Сохранить"
-        children={[
-          {name: 'name', placeholder: 'Имя деятеля'},
-          {name: 'about', placeholder: 'Деятельность'}
-        ]}
+        title = "Редактировать профиль"
+        name = "profile"
+        btnTitle = "Сохранить"
+        inputs = {
+          <>
+            <input type="text" className="form__text-input" name="name" defaultValue="" placeholder="Имя деятеля" minLength="2" maxLength="40" id="name" required />
+            <span className="form__input-error" id="name-error"></span>
+
+            <input type="text" className="form__text-input" name="about" defaultValue="" placeholder="Деятельность" minLength="2" maxLength="200" id="about" required />
+            <span className="form__input-error" id="about-error"></span>
+          </>
+        }
         isOpen={isEditProfilePopupOpen}
         onClose={closeAllPopups}
       />
 
       <PopupWithForm
-        title="Новое место"
-        name="card"
-        btnTitle="Создать"
-        children={[
-          {name: 'name', placeholder: 'Название'},
-          {name: 'link', placeholder: 'Ссылка на картинку'}
-        ]}
+        title = "Новое место"
+        name = "card"
+        btnTitle = "Создать"
+        inputs = {
+          <>
+            <input type="text" className="form__text-input" name="name" defaultValue="" placeholder="Название" minLength="1" maxLength="30" id="name" required />
+            <span className="form__input-error" id="name-error"></span>
+
+            <input type="url" className="form__text-input" name="link" defaultValue="" placeholder="Ссылка на картинку" id="link" required />
+            <span className="form__input-error" id="link-error"></span>
+          </>
+        }
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}
       />
 
       <PopupWithForm
-        title="Вы уверены?"
-        name="confirmation"
-        btnTitle="Да"
-        children={[]}
+        title = "Вы уверены?"
+        name = "confirmation"
+        btnTitle = "Да"
         isOpen={false}
         onClose={closeAllPopups}
       />
 
       <ImagePopup
-        card={selectedCard}
-        onClose={closeAllPopups}
+        card = {selectedCard}
+        isOpen = {isImagePopupOpen}
+        onClose = {closeAllPopups}
       />
     </div>
   );

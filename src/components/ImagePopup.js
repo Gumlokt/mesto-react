@@ -1,6 +1,6 @@
 function ImagePopup(props) {
   return (
-    <div className="popup">
+    <div className={`popup${props.isOpen ? ' popup_opened' : ''}`}>
       <div className="popup__container popup__container_theme_dark">
         <button onClick={props.onClose} className="popup__btn-close" type="button" aria-label="Закрыть окно"></button>
 

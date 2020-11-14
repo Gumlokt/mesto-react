@@ -11,23 +11,6 @@ function Main(props) {
   const [cards, setCards] = React.useState([]);
 
 
-  function handleUserAvatar(avatar) {
-    setUserAvatar(avatar);
-  }
-
-  function handleUserName(name) {
-    setUserName(name);
-  }
-
-  function handleUserDescription(about) {
-    setUserDescription(about);
-  }
-
-  function handleCards(cards) {
-    setCards(cards);
-  }
-
-
   React.useEffect(() => {
     Promise.all([ //в Promise.all передаем массив промисов которые нужно выполнить
       appApi.getUserInfo(),
@@ -36,21 +19,10 @@ function Main(props) {
     .then((values) => { //попадаем сюда когда массив промисов будут выполнены
       const [ userData, initialCards ] = values;
 
-      handleUserAvatar(userData.avatar);
-      handleUserName(userData.name);
-      handleUserDescription(userData.about);
-
-      const cardList = initialCards.map((item) => {
-        return (
-          <Card
-            card={item}
-            onCardClick={props.onCardClick}
-            key={item._id}
-          />
-        )
-      });
-
-      handleCards(cardList);
+      setUserAvatar(userData.avatar);
+      setUserName(userData.name);
+      setUserDescription(userData.about);
+      setCards(initialCards);
     })
     .catch((err) => { //попадаем сюда если хотя бы один из промисов завершится ошибкой
       console.log(err.message);
@@ -79,10 +51,15 @@ function Main(props) {
       </section>
 
 
-      <section className="elements">{cards}</section>
+      <section className="elements">{cards.map((item) => (
+        <Card
+          card={item}
+          onCardClick={props.onCardClick}
+          key={item._id}
+        />
+      ))}</section>
     </main>
   );
 }
-
 
 export default Main;
