@@ -44,7 +44,6 @@ function Main(props) {
       // Обновляем стейт
       setCards(newCards);
     });
-    // console.log(card);
   }
 
 
