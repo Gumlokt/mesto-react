@@ -4,6 +4,7 @@ import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 
+import EditAvatarPopup from './EditAvatarPopup';
 import EditProfilePopup from './EditProfilePopup';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
@@ -59,10 +60,17 @@ function App() {
     setImagePopupOpen(false);
   }
 
+  function handleUpdateAvatar(newAvatar) {
+    appApi.setAvatar(newAvatar).then((updatedAvatar) => {
+      setCurrentUser(updatedAvatar);
+      closeAllPopups();
+    });
+  }
+
   function handleUpdateUser(newUserData) {
     appApi.setUserInfo(newUserData).then((updatedUserData) => {
       setCurrentUser(updatedUserData);
-      closeAllPopups()
+      closeAllPopups();
     });
   }
 
@@ -83,18 +91,11 @@ function App() {
         <Footer />
 
 
-        <PopupWithForm
-          title = "Обновить аватар"
-          name = "avatar"
-          btnTitle = "Сохранить"
-          inputs = {
-            <>
-              <input type="url" className="form__text-input" name="avatar" defaultValue="" placeholder="Ссылка на аватарку" id="avatar" required />
-              <span className="form__input-error" id="avatar-error"></span>
-            </>
-          }
+
+        <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
+          onUpdateAvatar={handleUpdateAvatar}
         />
 
         <EditProfilePopup
