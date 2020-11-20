@@ -23,12 +23,10 @@ function App() {
   React.useEffect(() => {
     Promise.all([ //в Promise.all передаем массив промисов которые нужно выполнить
       appApi.getUserInfo(),
-      // appApi.getInitialCards()
     ])
     .then((values) => { //попадаем сюда когда массив промисов будут выполнены
       const [ userData ] = values;
       setCurrentUser(userData);
-      // setCards(initialCards);
     })
     .catch((err) => { //попадаем сюда если хотя бы один из промисов завершится ошибкой
       console.log(err.message);

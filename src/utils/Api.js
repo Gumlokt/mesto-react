@@ -92,7 +92,15 @@ class Api {
     }).then((res) => {
       return this._getResponseData(res, 'Лайк не удалён...');
     });
+  }
 
+
+  changeLikeCardStatus(id, liked) {
+    if(liked) {
+      return this.unsetLike(id);
+    }
+
+    return this.setLike(id);
   }
 }
 

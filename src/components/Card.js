@@ -1,23 +1,33 @@
 import React from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-function Card(props) {
-  const curUser = React.useContext(CurrentUserContext);
 
-  const isOwn = props.card.owner._id === curUser._id;
-  const isLiked = props.card.likes.some(i => i._id === curUser._id);
+function Card(props) {
+  const currentUser = React.useContext(CurrentUserContext);
+
+  const isOwn = props.card.owner._id === currentUser._id;
+  const isLiked = props.card.likes.some(i => i._id === currentUser._id);
 
 
   function handleClick() {
     props.onCardClick(props.card);
   }
 
+  function handleLikeClick() {
+    props.onCardLike(props.card);
+  }
+
+  function handleDeleteClick() {
+    props.onCardDelete(props.card);
+  }
+
+
   return (
     <ul className="element">
       <li className="element__item">
         <img onClick={handleClick} src={props.card.link} alt="Фото красивого места" className="element__image" />
 
-        {isOwn ? <button className="element__btn-remove" type="button" aria-label="Удалить карточку"></button> : ''}
+        {isOwn ? <button onClick={handleDeleteClick} className="element__btn-remove" type="button" aria-label="Удалить карточку"></button> : ''}
       </li>
 
       <li className="element__item">
@@ -25,7 +35,7 @@ function Card(props) {
           <h2 className="element__title">{props.card.name}</h2>
 
           <div className="element__like-zone">
-            <button className={`element__btn-like${isLiked ? ' element__btn-like_clicked' : ''}`} type="button" aria-label="Поставить либо убрать лайк"></button>
+            <button onClick={handleLikeClick} className={`element__btn-like${isLiked ? ' element__btn-like_clicked' : ''}`} type="button" aria-label="Поставить либо убрать лайк"></button>
             <p className="element__likes">{props.card.likes.length}</p>
           </div>
         </div>

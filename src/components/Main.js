@@ -1,16 +1,11 @@
 import React from 'react';
-// import profileAvatar from '../images/cousteau.jpg';
 import { appApi } from '../utils/Api';
 import Card from './Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 
 function Main(props) {
-  const curUser = React.useContext(CurrentUserContext);
-
-  // const [userAvatar, setUserAvatar] = React.useState(profileAvatar);
-  // const [userName, setUserName] = React.useState('Жак-Ив Кусто');
-  // const [userDescription, setUserDescription] = React.useState('Исследователь океана');
+  const currentUser = React.useContext(CurrentUserContext);
   const [cards, setCards] = React.useState([]);
 
 
@@ -28,20 +23,45 @@ function Main(props) {
   }, []);
 
 
+  function handleCardLike(card) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    appApi.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
+        // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
+      const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+      // Обновляем стейт
+      setCards(newCards);
+    });
+  }
+
+  function handleCardDelete(card) {
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    appApi.deleteCard(card._id).then((newCard) => {
+        // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
+      const newCards = cards.filter((c) => c._id !== card._id);
+      // Обновляем стейт
+      setCards(newCards);
+    });
+    // console.log(card);
+  }
+
+
   return (
     <main className="content">
       <section className="profile">
         <div className="profile__data">
           <button onClick={props.onEditAvatar} className="profile__btn-edit-avatar">
-            <img src={curUser.avatar} alt="Аватарка (фото) владельца профиля" className="profile__avatar" />
+            <img src={currentUser.avatar} alt="Аватарка (фото) владельца профиля" className="profile__avatar" />
           </button>
 
           <div className="profile__info">
-            <h1 className="profile__name">{curUser.name}</h1>
+            <h1 className="profile__name">{currentUser.name}</h1>
 
             <button onClick={props.onEditProfile} className="profile__btn-edit" type="button" aria-label="Открыть окно редактирования профиля"></button>
 
-            <p className="profile__about">{curUser.about}</p>
+            <p className="profile__about">{currentUser.about}</p>
           </div>
         </div>
 
@@ -53,6 +73,8 @@ function Main(props) {
         <Card
           card={item}
           onCardClick={props.onCardClick}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
           key={item._id}
         />
       ))}</section>
