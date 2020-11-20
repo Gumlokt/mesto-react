@@ -6,8 +6,10 @@ import Footer from './Footer';
 
 import EditAvatarPopup from './EditAvatarPopup';
 import EditProfilePopup from './EditProfilePopup';
+import AddPlacePopup from './AddPlacePopup';
 import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
+
 
 import { appApi } from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
@@ -20,15 +22,19 @@ function App() {
   const [selectedCard, setSelectedCard] = React.useState({});
 
   const [currentUser, setCurrentUser] = React.useState({});
-  // const [cards, setCards] = React.useState([]);
+  const [cards, setCards] = React.useState([]);
+
 
   React.useEffect(() => {
     Promise.all([ //в Promise.all передаем массив промисов которые нужно выполнить
       appApi.getUserInfo(),
+      appApi.getInitialCards()
     ])
     .then((values) => { //попадаем сюда когда массив промисов будут выполнены
-      const [ userData ] = values;
+      const [ userData, initialCards ] = values;
+
       setCurrentUser(userData);
+      setCards(initialCards);
     })
     .catch((err) => { //попадаем сюда если хотя бы один из промисов завершится ошибкой
       console.log(err.message);
@@ -74,6 +80,38 @@ function App() {
     });
   }
 
+  function handleAddPlaceSubmi(newCardData) {
+    appApi.addCard(newCardData).then((addedCard) => {
+      setCards([addedCard, ...cards]);
+      closeAllPopups();
+    });
+  }
+
+
+
+  function handleCardLike(card) {
+    // Снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    appApi.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
+        // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
+      const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+      // Обновляем стейт
+      setCards(newCards);
+    });
+  }
+
+  function handleCardDelete(card) {
+    // Отправляем запрос в API и получаем обновлённые данные карточки
+    appApi.deleteCard(card._id).then((newCard) => {
+        // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
+      const newCards = cards.filter((c) => c._id !== card._id);
+      // Обновляем стейт
+      setCards(newCards);
+    });
+  }
+
 
 
   return (
@@ -82,6 +120,9 @@ function App() {
         <Header />
 
         <Main
+          cards={cards}
+          onCardLike={handleCardLike}
+          onCardDelete={handleCardDelete}
           onEditAvatar = {handleEditAvatarClick}
           onEditProfile = {handleEditProfileClick}
           onAddPlace = {handleAddPlaceClick}
@@ -104,22 +145,12 @@ function App() {
           onUpdateUser={handleUpdateUser}
         />
 
-        <PopupWithForm
-          title = "Новое место"
-          name = "card"
-          btnTitle = "Создать"
-          inputs = {
-            <>
-              <input type="text" className="form__text-input" name="name" defaultValue="" placeholder="Название" minLength="1" maxLength="30" id="name" required />
-              <span className="form__input-error" id="name-error"></span>
-
-              <input type="url" className="form__text-input" name="link" defaultValue="" placeholder="Ссылка на картинку" id="link" required />
-              <span className="form__input-error" id="link-error"></span>
-            </>
-          }
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
+          onAddCard={handleAddPlaceSubmi}
         />
+
 
         <PopupWithForm
           title = "Вы уверены?"
