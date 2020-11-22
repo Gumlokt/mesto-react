@@ -70,21 +70,30 @@ function App() {
     appApi.setAvatar(newAvatar).then((updatedAvatar) => {
       setCurrentUser(updatedAvatar);
       closeAllPopups();
-    });
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });;
   }
 
   function handleUpdateUser(newUserData) {
     appApi.setUserInfo(newUserData).then((updatedUserData) => {
       setCurrentUser(updatedUserData);
       closeAllPopups();
-    });
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });;
   }
 
   function handleAddPlaceSubmi(newCardData) {
     appApi.addCard(newCardData).then((addedCard) => {
       setCards([addedCard, ...cards]);
       closeAllPopups();
-    });
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });;
   }
 
 
@@ -92,14 +101,17 @@ function App() {
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some(i => i._id === currentUser._id);
-    
+
     // Отправляем запрос в API и получаем обновлённые данные карточки
     appApi.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
         // Формируем новый массив на основе имеющегося, подставляя в него новую карточку
       const newCards = cards.map((c) => c._id === card._id ? newCard : c);
       // Обновляем стейт
       setCards(newCards);
-    });
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });;
   }
 
   function handleCardDelete(card) {
@@ -109,7 +121,10 @@ function App() {
       const newCards = cards.filter((c) => c._id !== card._id);
       // Обновляем стейт
       setCards(newCards);
-    });
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });;
   }
 
 
@@ -169,5 +184,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;

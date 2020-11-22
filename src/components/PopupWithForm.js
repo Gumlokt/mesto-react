@@ -7,7 +7,7 @@ function PopupWithForm(props) {
         <form onSubmit={props.onSubmit} className="form" name={props.name}>
           <h2 className="form__title">{props.title}</h2>
 
-          {props.inputs}
+          {props.children}
 
           <button className="form__btn-save" name="saveButton">{props.btnTitle}</button>
         </form>
@@ -15,5 +15,6 @@ function PopupWithForm(props) {
     </div>
   );
 }
+
 
 export default PopupWithForm;

@@ -10,11 +10,11 @@ function AddPlacePopup(props) {
   function handleChangeName(e) {
     setPlaceName(e.target.value);
   }
-  
+
   function handleChangeLink(e) {
     setPlaceLink(e.target.value);
   }
-  
+
 
   function handleSubmit(e) {
     // Запрещаем браузеру переходить по адресу формы
@@ -28,26 +28,22 @@ function AddPlacePopup(props) {
 
 
   return (
-    <>
-      <PopupWithForm
-        title = "Новое место"
-        name = "card"
-        btnTitle = "Создать"
-        inputs = {
-          <>
-            <input onChange={handleChangeName} defaultValue={placeName} type="text" className="form__text-input" name="name" defaultValue="" placeholder="Название" minLength="1" maxLength="30" id="name" required />
-            <span className="form__input-error" id="name-error"></span>
+    <PopupWithForm
+      title = "Новое место"
+      name = "card"
+      btnTitle = "Создать"
+      isOpen={props.isOpen}
+      onClose={props.onClose}
+      onSubmit={handleSubmit}
+    >
+      <input onChange={handleChangeName} type="text" className="form__text-input" name="name" defaultValue="" placeholder="Название" minLength="1" maxLength="30" id="name" required />
+      <span className="form__input-error" id="name-error"></span>
 
-            <input onChange={handleChangeLink} defaultValue={placeLink} type="url" className="form__text-input" name="link" defaultValue="" placeholder="Ссылка на картинку" id="link" required />
-            <span className="form__input-error" id="link-error"></span>
-          </>
-        }
-        isOpen={props.isOpen}
-        onClose={props.onClose}
-        onSubmit={handleSubmit}
-      />
-    </>
+      <input onChange={handleChangeLink} type="url" className="form__text-input" name="link" defaultValue="" placeholder="Ссылка на картинку" id="link" required />
+      <span className="form__input-error" id="link-error"></span>
+    </PopupWithForm>
   );
 }
+
 
 export default AddPlacePopup;

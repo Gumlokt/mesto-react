@@ -9,13 +9,11 @@ function EditAvatarPopup(props) {
   function handleChangeAva(e) {
     avaRef.current.value = e.target.value;
   }
-  
+
 
   function handleSubmit(e) {
-    // Запрещаем браузеру переходить по адресу формы
     e.preventDefault();
 
-    // Передаём значения управляемых компонентов во внешний обработчик
     props.onUpdateAvatar({
       avatar: avaRef.current.value
     });
@@ -23,24 +21,19 @@ function EditAvatarPopup(props) {
 
 
   return (
-    <>
-      <PopupWithForm
-        title = "Обновить аватар"
-        name = "avatar"
-        btnTitle = "Сохранить"
-        inputs = {
-          <>
-            <input onChange={handleChangeAva} ref={avaRef} type="url" className="form__text-input" name="avatar" defaultValue="" placeholder="Ссылка на аватарку" id="avatar" required />
-            <span className="form__input-error" id="avatar-error"></span>
-          </>
-        }
-        isOpen={props.isOpen}
-        onClose={props.onClose}
-        onSubmit={handleSubmit}
-      />
-    </>
+    <PopupWithForm
+      title = "Обновить аватар"
+      name = "avatar"
+      btnTitle = "Сохранить"
+      isOpen={props.isOpen}
+      onClose={props.onClose}
+      onSubmit={handleSubmit}
+    >
+      <input onChange={handleChangeAva} ref={avaRef} type="url" className="form__text-input" name="avatar" defaultValue="" placeholder="Ссылка на аватарку" id="avatar" required />
+      <span className="form__input-error" id="avatar-error"></span>
+    </PopupWithForm>
   );
 }
 
+
 export default EditAvatarPopup;
-  
