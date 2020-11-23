@@ -14,9 +14,13 @@ function EditAvatarPopup(props) {
   function handleSubmit(e) {
     e.preventDefault();
 
-    props.onUpdateAvatar({
-      avatar: avaRef.current.value
-    });
+    if (avaRef.current.value) {
+      props.onUpdateAvatar({
+        avatar: avaRef.current.value,
+      });
+    } else {
+      props.onClose();
+    }
   }
 
 
