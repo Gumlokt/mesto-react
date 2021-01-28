@@ -6,6 +6,7 @@ import Dashboard from './Dashboard';
 
 import Login from './Login';
 import Register from './Register';
+import InfoTooltip from './InfoTooltip';
 import ProtectedRoute from './ProtectedRoute';
 
 function App() {
@@ -45,7 +46,7 @@ function App() {
 
           <Login
             formTitle="Вход"
-            name="registration"
+            name="login"
             btnTitle="Войти"
             inputs={
               <>
@@ -53,9 +54,9 @@ function App() {
                   onChange={handleChangeEmail}
                   defaultValue={email}
                   type="email"
-                  className="form__text-input"
+                  className="form__text-input form__text-input_theme_dark"
                   name="email"
-                  placeholder="E-Mail"
+                  placeholder="Email"
                   id="email"
                   required
                 />
@@ -65,7 +66,7 @@ function App() {
                   onChange={handlePassword}
                   defaultValue={password}
                   type="password"
-                  className="form__text-input"
+                  className="form__text-input form__text-input_theme_dark"
                   name="link"
                   placeholder="Пароль"
                   id="link"
@@ -76,16 +77,49 @@ function App() {
             }
             onSubmit={handleSubmit}
           />
+          <InfoTooltip />
         </Route>
 
         <Route path="/sign-up">
           <Header navLink="/sign-in" navTitle="Войти" />
 
-          <Register />
+          <Register
+            formTitle="Регистрация"
+            name="registration"
+            btnTitle="Зарегистрироваться"
+            inputs={
+              <>
+                <input
+                  onChange={handleChangeEmail}
+                  defaultValue={email}
+                  type="email"
+                  className="form__text-input form__text-input_theme_dark"
+                  name="email"
+                  placeholder="Email"
+                  id="email"
+                  required
+                />
+                <span className="form__input-error" id="name-error"></span>
+
+                <input
+                  onChange={handlePassword}
+                  defaultValue={password}
+                  type="password"
+                  className="form__text-input form__text-input_theme_dark"
+                  name="link"
+                  placeholder="Пароль"
+                  id="link"
+                  required
+                />
+                <span className="form__input-error" id="link-error"></span>
+              </>
+            }
+            onSubmit={handleSubmit}
+
+          />
         </Route>
 
         <ProtectedRoute
-          exact
           path="/"
           loggedIn={loggedIn}
           component={Dashboard}

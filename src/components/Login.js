@@ -4,14 +4,14 @@ function Login(props) {
       <section className="credentials">
         <form
           onSubmit={props.onSubmit}
-          className="credentials__form"
+          className="form"
           name={props.name}
         >
-          <h2 className="form__title">{props.formTitle}</h2>
+          <h2 className="form__title form__title_theme_dark">{props.formTitle}</h2>
 
           {props.inputs}
 
-          <button className="form__btn-save" name="saveButton">
+          <button className="form__btn-save form__btn-save_theme_light" name="saveButton">
             {props.btnTitle}
           </button>
         </form>
