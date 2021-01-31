@@ -1,23 +1,56 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import * as auth from '../auth.js';
 
-function Register(props) {
-  const handleChangeEmail = (e) => {
-    props.onChangeEmail(e.target.value);
+function Register() {
+  const history = useHistory();
+  const [credentials, setCredentials] = useState({ email: '', password: ''});
+
+  function handleChange (e) {
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleChangePassword = (e) => {
-    props.onChangePassword(e.target.value);
-  };
+
+
+  function handleSubmit(e) {
+    // Запрещаем браузеру переходить по адресу формы
+    e.preventDefault();
+    // Передаём значения управляемых компонентов во внешний обработчик
+    // props.onAddCard({
+    //   name: email,
+    //   link: password
+    // });
+
+    auth.register(credentials)
+      .then((res) => {
+        if(!res) {
+          console.log({ message: 'Что-то пошло не так!' });
+          return;
+        }
+
+        if(res.error) {
+          console.log(res.error);
+          return;
+        } else {
+          // console.log({ message: 'регистрация успешна' });
+          history.push('/sing-in');
+          return;
+        }
+      });
+  }
 
   return (
     <main className="content">
       <section className="credentials">
-        <form onSubmit={props.onSubmit} className="form" name="registration">
+        <form onSubmit={handleSubmit} className="form" name="registration">
           <h2 className="form__title form__title_theme_dark">Регистрация</h2>
 
           <input
-            onChange={handleChangeEmail}
-            value={props.email}
+            onChange={handleChange}
+            value={credentials.email}
             type="email"
             className="form__text-input form__text-input_theme_dark"
             name="email"
@@ -28,13 +61,13 @@ function Register(props) {
           <span className="form__input-error" id="email-error"></span>
 
           <input
-            onChange={handleChangePassword}
-            value={props.password}
+            onChange={handleChange}
+            value={credentials.password}
             type="password"
             className="form__text-input form__text-input_theme_dark"
-            name="link"
+            name="password"
             placeholder="Пароль"
-            id="link"
+            id="password"
             required
           />
           <span className="form__input-error" id="password-error"></span>

@@ -1,23 +1,37 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 function Login(props) {
-  const handleChangeEmail = (e) => {
-    props.onChangeEmail(e.target.value);
+  const [credentials, setCredentials] = useState({ email: '', password: ''});
+
+  function handleChange (e) {
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  const handleChangePassword = (e) => {
-    props.onChangePassword(e.target.value);
-  };
+  function handleSubmit(e) {
+    // Запрещаем браузеру переходить по адресу формы
+    e.preventDefault();
+    // Передаём значения управляемых компонентов во внешний обработчик
+    // props.onAddCard({
+    //   name: email,
+    //   link: password
+    // });
+    console.log(credentials);
+    setCredentials({ email: '', password: ''});
+  }
 
   return (
+
     <main className="content">
       <section className="credentials">
-        <form onSubmit={props.onSubmit} className="form" name="login">
+        <form onSubmit={handleSubmit} className="form" name="login">
           <h2 className="form__title form__title_theme_dark">Вход</h2>
 
           <input
-            onChange={handleChangeEmail}
-            value={props.email}
+            onChange={handleChange}
+            value={credentials.email}
             type="email"
             className="form__text-input form__text-input_theme_dark"
             name="email"
@@ -28,13 +42,13 @@ function Login(props) {
           <span className="form__input-error" id="email-error"></span>
 
           <input
-            onChange={handleChangePassword}
-            value={props.password}
+            onChange={handleChange}
+            value={credentials.password}
             type="password"
             className="form__text-input form__text-input_theme_dark"
-            name="link"
+            name="password"
             placeholder="Пароль"
-            id="link"
+            id="password"
             required
           />
           <span className="form__input-error" id="password-error"></span>
