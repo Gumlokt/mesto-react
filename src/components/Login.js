@@ -1,14 +1,17 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import * as auth from '../auth.js';
 
 function Login(props) {
-  const [credentials, setCredentials] = useState({ email: '', password: ''});
+  const history = useHistory();
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
 
-  function handleChange (e) {
+  function handleChange(e) {
     setCredentials({
       ...credentials,
       [e.target.name]: e.target.value,
     });
-  };
+  }
 
   function handleSubmit(e) {
     // Запрещаем браузеру переходить по адресу формы
@@ -18,12 +21,26 @@ function Login(props) {
     //   name: email,
     //   link: password
     // });
-    console.log(credentials);
-    setCredentials({ email: '', password: ''});
+    auth.authorize(credentials).then((data) => {
+      if (!data) {
+        console.log({ message: 'Что-то пошло не так!' });
+        return;
+      }
+
+      if (data.error) {
+        console.log(data.error);
+        return;
+      } else if (data.token) {
+        setCredentials({ email: '', password: '' });
+        props.onLogin(true);
+        history.push('/');
+      } else {
+        console.log({ message: 'Барабашка взял и не прислал token :-)' });
+      }
+    });
   }
 
   return (
-
     <main className="content">
       <section className="credentials">
         <form onSubmit={handleSubmit} className="form" name="login">

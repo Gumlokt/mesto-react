@@ -4,16 +4,14 @@ import * as auth from '../auth.js';
 
 function Register() {
   const history = useHistory();
-  const [credentials, setCredentials] = useState({ email: '', password: ''});
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
 
-  function handleChange (e) {
+  function handleChange(e) {
     setCredentials({
       ...credentials,
       [e.target.name]: e.target.value,
     });
-  };
-
-
+  }
 
   function handleSubmit(e) {
     // Запрещаем браузеру переходить по адресу формы
@@ -24,22 +22,21 @@ function Register() {
     //   link: password
     // });
 
-    auth.register(credentials)
-      .then((res) => {
-        if(!res) {
-          console.log({ message: 'Что-то пошло не так!' });
-          return;
-        }
+    auth.register(credentials).then((data) => {
+      if (!data) {
+        console.log({ message: 'Что-то пошло не так!' });
+        return;
+      }
 
-        if(res.error) {
-          console.log(res.error);
-          return;
-        } else {
-          // console.log({ message: 'регистрация успешна' });
-          history.push('/sing-in');
-          return;
-        }
-      });
+      if (data.error) {
+        console.log(data.error);
+        return;
+      } else {
+        // console.log({ message: 'регистрация успешна' });
+        history.push('/sing-in');
+        return;
+      }
+    });
   }
 
   return (
