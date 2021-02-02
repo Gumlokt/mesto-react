@@ -1,71 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Route, Switch, useHistory } from 'react-router-dom';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import * as auth from '../auth.js';
 
 import Header from './Header';
-import Main from './Main';
-import Footer from './Footer';
+import Dashboard from './Dashboard';
 
-import EditAvatarPopup from './EditAvatarPopup';
-import EditProfilePopup from './EditProfilePopup';
-import AddPlacePopup from './AddPlacePopup';
-import PopupWithForm from './PopupWithForm';
-import ImagePopup from './ImagePopup';
-
-
-import { appApi } from '../utils/Api';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import Login from './Login';
+import Register from './Register';
+import InfoTooltip from './InfoTooltip';
+import ProtectedRoute from './ProtectedRoute';
 
 function App() {
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isImagePopupOpen, setImagePopupOpen] = React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState({});
+  const history = useHistory();
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+  const [currentUser, setCurrentUser] = useState({});
+  const [isInformerPopupOpen, setInformerPopupOpen] = useState(false);
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const [messageToUser, setMessageToUser] = useState('');
+  const [popupIconSuccess, setPopupIconSuccess] = useState(false);
 
-  const [currentUser, setCurrentUser] = React.useState({});
-  const [cards, setCards] = React.useState([]);
-
-
-  React.useEffect(() => {
-    Promise.all([ //в Promise.all передаем массив промисов которые нужно выполнить
-      appApi.getUserInfo(),
-      appApi.getInitialCards()
-    ])
-    .then((values) => { //попадаем сюда когда массив промисов будут выполнены
-      const [ userData, initialCards ] = values;
-
-      setCurrentUser(userData);
-      setCards(initialCards);
-    })
-    .catch((err) => { //попадаем сюда если хотя бы один из промисов завершится ошибкой
-      console.log(err.message);
+  function handleCredentialsChange(e) {
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value,
     });
-  }, []);
-
-
-  function handleEditAvatarClick() {
-    setIsEditAvatarPopupOpen(true);
   }
 
-  function handleEditProfileClick() {
-    setIsEditProfilePopupOpen(true);
+  function handleUser(user) {
+    setCurrentUser(user);
   }
 
-  function handleAddPlaceClick() {
-    setIsAddPlacePopupOpen(true);
+  function handleLoggedIn(trueOrFalse) {
+    setLoggedIn(trueOrFalse);
   }
 
-  function handleCardClick(card) {
-    setSelectedCard(card);
-    setImagePopupOpen(true);
+  function openInformerPopup(message, successIcon = false) {
+    setMessageToUser(message);
+    setInformerPopupOpen(true);
+    setPopupIconSuccess(successIcon);
   }
 
-  function closeAllPopups() {
-    setIsAddPlacePopupOpen(false);
-    setIsEditProfilePopupOpen(false);
-    setIsEditAvatarPopupOpen(false);
-    setImagePopupOpen(false);
+  function closeInformerPopup() {
+    setInformerPopupOpen(false);
+    setMessageToUser('');
+    if (popupIconSuccess) {
+      setCredentials({ email: '', password: '' });
+      history.push('/sing-in');
+    }
+    setPopupIconSuccess(false);
   }
 
+<<<<<<< HEAD
   function handleUpdateAvatar(newAvatar) {
     appApi.setAvatar(newAvatar).then((updatedAvatar) => {
       setCurrentUser(updatedAvatar);
@@ -128,59 +115,111 @@ function App() {
   }
 
 
+=======
+  function handleLogin(e) {
+    e.preventDefault();
+
+    auth.authorize(credentials).then((data) => {
+      if (!data) {
+        openInformerPopup('Что-то пошло не так!');
+        return;
+      }
+
+      if (data.message) {
+        openInformerPopup(data.message);
+        return;
+      } else if (data.token) {
+        setCredentials({ email: '', password: '' });
+        handleLoggedIn(true);
+        history.push('/');
+      } else {
+        openInformerPopup('Барабашка взял так и учудил конкретно :-)');
+      }
+    });
+  }
+
+  function handleRegister(e) {
+    e.preventDefault();
+
+    auth.register(credentials).then((data) => {
+      if (!data) {
+        openInformerPopup('Что-то пошло не так!');
+        return;
+      }
+
+      if (data.error) {
+        openInformerPopup(data.error);
+        return;
+      } else {
+        openInformerPopup('Регистрация успешна!', true);
+        // history.push('/sing-in');
+        return;
+      }
+    });
+  }
+
+  React.useEffect(() => {
+    if (localStorage.getItem('token')) {
+      const token = localStorage.getItem('token');
+
+      if (token) {
+        auth.getContent(token).then((res) => {
+          if (res) {
+            setUserEmail(res.data.email);
+            handleLoggedIn(true);
+            history.push('/');
+          }
+        });
+      }
+    }
+
+    // // Возвращаем функцию, которая удаляет эффекты
+    // return () => {
+    //   setUserEmail('');
+    // };
+  });
+>>>>>>> develop
 
   return (
     <div className="App">
-      <CurrentUserContext.Provider value={currentUser}>
-        <Header />
+      <Switch>
+        <Route path="/sign-in">
+          <Header navLink="/sign-up" navTitle="Регистрация" />
+          <Login
+            credentials={credentials}
+            onCredentialsChange={handleCredentialsChange}
+            loginUser={handleLogin}
+          />
+        </Route>
 
-        <Main
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
-          onEditAvatar = {handleEditAvatarClick}
-          onEditProfile = {handleEditProfileClick}
-          onAddPlace = {handleAddPlaceClick}
-          onCardClick = {handleCardClick}
-        />
+        <Route path="/sign-up">
+          <Header navLink="/sign-in" navTitle="Войти" />
+          <Register
+            credentials={credentials}
+            onCredentialsChange={handleCredentialsChange}
+            registerUser={handleRegister}
+          />
+        </Route>
 
-        <Footer />
+        <CurrentUserContext.Provider value={currentUser}>
+          <ProtectedRoute
+            path="/"
+            currentUser={currentUser}
+            handleUser={handleUser}
+            loggedIn={loggedIn}
+            userEmail={userEmail}
+            onLogout={handleLoggedIn}
+            component={Dashboard}
+          />
+        </CurrentUserContext.Provider>
+      </Switch>
 
-
-
-        <EditAvatarPopup
-          isOpen={isEditAvatarPopupOpen}
-          onClose={closeAllPopups}
-          onUpdateAvatar={handleUpdateAvatar}
-        />
-
-        <EditProfilePopup
-          isOpen={isEditProfilePopupOpen}
-          onClose={closeAllPopups}
-          onUpdateUser={handleUpdateUser}
-        />
-
-        <AddPlacePopup
-          isOpen={isAddPlacePopupOpen}
-          onClose={closeAllPopups}
-          onAddCard={handleAddPlaceSubmi}
-        />
-
-
-        <PopupWithForm
-          title = "Вы уверены?"
-          name = "confirmation"
-          btnTitle = "Да"
-          isOpen={false}
-          onClose={closeAllPopups}
-        />
-
-        <ImagePopup
-          card = {selectedCard}
-          isOpen = {isImagePopupOpen}
-          onClose = {closeAllPopups}
-        />
-      </CurrentUserContext.Provider>
+      <InfoTooltip
+        message={messageToUser}
+        successIcon={popupIconSuccess}
+        isOpen={isInformerPopupOpen}
+        onClose={closeInformerPopup}
+      />
     </div>
   );
 }
