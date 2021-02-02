@@ -1,11 +1,9 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 import logo from '../images/logo.svg';
 
 function Header(props) {
-  const userEmail = React.useContext(CurrentUserContext);
   const history = useHistory();
 
   function signOut() {

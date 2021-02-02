@@ -31,13 +31,10 @@ export const authorize = ({ email, password }) => {
       return response.json();
     })
     .then((data) => {
-      // console.log(data);
       if (data.token) {
         localStorage.setItem('token', data.token);
-        return data;
-      } else {
-        return;
       }
+      return data;
     })
     .catch((err) => {
       console.log(err);
